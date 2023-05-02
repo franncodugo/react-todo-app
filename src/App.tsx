@@ -2,8 +2,13 @@
 import { useState } from 'react'
 import './App.css'
 
+interface ITodoList{
+  id: number,
+  taskName: string
+};
+
 function App() {
-  const [todoList, setTodoList] = useState<string[]>([]);
+  const [todoList, setTodoList] = useState<ITodoList[]>([]);
   const [todoItem, setTodoItem] = useState("");
   
   const handleInputValue = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -11,10 +16,22 @@ function App() {
     setTodoItem(target.value);
   };
 
-  // Option 1 to populate todoList
+  // Adding todoItem to the TodoList
   const addTask = () => {
-    const newTodoList = [...todoList, todoItem];
-    setTodoList(newTodoList);
+    const task: ITodoList = {
+      id: 1,
+      taskName: todoItem
+    }; 
+    setTodoList([...todoList, task]);
+  }
+
+  // Deleting task by Id from the TodoList
+  const deleteTask = (taskId: number) => {
+    if (todoList !== undefined){
+      console.log(taskId);
+      const newTodoList = todoList?.filter((task) => task.id !== taskId);
+      setTodoList(newTodoList);
+    }
   }
 
   return(
@@ -24,8 +41,13 @@ function App() {
         <br /><br />
         <button onClick={addTask}>Add Task</button>
       <div className="taskList">
-        {todoList.map((item, key) => {
-          return <h2 key={key}>{item}</h2>
+        {todoList && todoList.map((task, key) => {  
+          return (
+            <div>
+              <h2 key={key}>{task.taskName}</h2>
+              <button onClick={() => deleteTask(task.id)}> X </button>
+            </div>
+          )
         })}
       </div>
     </>
@@ -33,6 +55,35 @@ function App() {
 }
 
 export default App
+
+// Delete Notes:
+
+// 1. We create the button that will delete in each task. 
+  // Note: We must use this syntax, using an anonymous function.. 
+  // <button onClick={() => deleteTask(key)}> X </button>
+
+// 2. The function will be: 
+  //const deleteTask = (taskName: string) => {
+  //  const newTodoList = todoList.filter((task) => {
+  //    if (task === taskName){
+  //      return false;
+  //    }else{
+  //      return true;
+  //    }
+  //   }); 
+  //   setTodoList(newTodoList);
+  //}
+
+  // Option 2:
+    // const deleteTask = (taskName: string) => {
+    // const newTodoList = todoList.filter((task) => task !== taskName);
+    // setTodoList(newTodoList);
+    // }
+
+// 3. The problem with this approach (not using an Id) is that when we have 2 Task with
+// the same name it will be deleting both instead of the one that the user clicked.
+
+// Add & Create Notes:
 
 // Nota: const newTodoList = [...todoList, newTask] // The array will have everything that "todoList" has and will add 
 // the new one coming from "newTask".
