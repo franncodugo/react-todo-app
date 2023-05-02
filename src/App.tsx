@@ -10,22 +10,29 @@ interface ITodoList{
 function App() {
   const [todoList, setTodoList] = useState<ITodoList[]>([]);
   const [todoItem, setTodoItem] = useState("");
+  const [id, setId] = useState(1);
   
-  const handleInputValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // Saving the input from the User into the todoItem state using the setTodoItem state method.
+  const handleInputValue = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const target = event.target as HTMLInputElement;
     setTodoItem(target.value);
   };
 
-  // Adding todoItem to the TodoList
-  const addTask = () => {
+  // Adding todoItem to the TodoList.
+  const addTask = (): void => {
+    setId(id + 1);
+
     const task: ITodoList = {
-      id: 1,
+      id: id,
       taskName: todoItem
     }; 
+
+    console.log(task);
+
     setTodoList([...todoList, task]);
   }
 
-  // Deleting task by Id from the TodoList
+  // Deleting task by Id from the TodoList.
   const deleteTask = (taskId: number) => {
     if (todoList !== undefined){
       console.log(taskId);
@@ -41,7 +48,7 @@ function App() {
         <br /><br />
         <button onClick={addTask}>Add Task</button>
       <div className="taskList">
-        {todoList && todoList.map((task, key) => {  
+        {todoList && todoList.map((task: ITodoList, key: number) => {  
           return (
             <div>
               <h2 key={key}>{task.taskName}</h2>
