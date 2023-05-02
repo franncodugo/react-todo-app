@@ -7,8 +7,8 @@ import { isCompositeComponent } from 'react-dom/test-utils';
 
 
 function App() {
-  const [todoList, setTodoList] = useState<ITodoList[]>([]);
   const [todoItem, setTodoItem] = useState("");
+  const [todoList, setTodoList] = useState<ITodoList[]>([]);
   const [id, setId] = useState(1);
   
   // Saving the input from the User into the todoItem state using the setTodoItem state method.
@@ -47,7 +47,6 @@ function App() {
         return task; // Keeping the same.
       }
     });
-    console.log(updatedTasks);
     setTodoList(updatedTasks);
   }
 
