@@ -1,11 +1,10 @@
 
-import { useState } from 'react'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+import { ITodoList } from './Interfaces/ITodoList';
+import { Task } from './Components/Task';
+import { isCompositeComponent } from 'react-dom/test-utils';
 
-interface ITodoList{
-  id: number,
-  taskName: string
-};
 
 function App() {
   const [todoList, setTodoList] = useState<ITodoList[]>([]);
@@ -22,23 +21,34 @@ function App() {
   const addTask = (): void => {
     setId(id + 1);
 
-    const task: ITodoList = {
+    const newTodoTask: ITodoList = {
       id: id,
-      taskName: todoItem
+      taskName: todoItem,
+      isCompleted: false
     }; 
 
-    console.log(task);
-
-    setTodoList([...todoList, task]);
+    setTodoList([...todoList, newTodoTask]);
   }
 
   // Deleting task by Id from the TodoList.
   const deleteTask = (taskId: number) => {
     if (todoList !== undefined){
-      console.log(taskId);
       const newTodoList = todoList?.filter((task) => task.id !== taskId);
       setTodoList(newTodoList);
     }
+  }
+
+  // Updating the task to mark it as Completed.
+  const setTaskToComplete = (taskId: number) =>{
+    const updatedTasks = todoList.map((task) => {
+      if (task.id === taskId){
+        return { ...task, isCompleted: true }; // Remain the same but the isCompleted prop to TRUE.
+      } else {
+        return task; // Keeping the same.
+      }
+    });
+    console.log(updatedTasks);
+    setTodoList(updatedTasks);
   }
 
   return(
@@ -50,10 +60,14 @@ function App() {
       <div className="taskList">
         {todoList && todoList.map((task: ITodoList, key: number) => {  
           return (
-            <div>
-              <h2 key={key}>{task.taskName}</h2>
-              <button onClick={() => deleteTask(task.id)}> X </button>
-            </div>
+            <Task 
+              key={key} 
+              taskName={task.taskName} 
+              deleteTask={deleteTask}
+              id={task.id}
+              isCompleted={task.isCompleted}
+              setTaskToComplete={setTaskToComplete}
+            />
           )
         })}
       </div>
@@ -61,9 +75,11 @@ function App() {
   )
 }
 
-export default App
+export default App;
 
-// Delete Notes:
+
+// Note: Si necesito extraer del JSX para crear un componente y este utiliza funciones, ids u
+// otras propiedades, todo se lo puedo enviar utilizando las PROPS.
 
 // 1. We create the button that will delete in each task. 
   // Note: We must use this syntax, using an anonymous function.. 
